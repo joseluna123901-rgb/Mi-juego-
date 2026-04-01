@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Platformer Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            background: #eee;
+            display: block;
+            margin: 0 auto;
+        }
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-between;
+            width: 200px;
+        }
+        .button {
+            background: #444;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div class="controls">
+        <div class="button" id="left">LEFT</div>
+        <div class="button" id="jump">JUMP</div>
+        <div class="button" id="right">RIGHT</div>
+        <div class="button" id="shoot">SHOOT</div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let player = {
+            x: 100,
+            y: canvas.height - 60,
+            width: 50,
+            height: 50,
+            speed: 5,
+            gravity: 0.5,
+            isJumping: false,
+            jumpForce: 10,
+            dy: 0,
+        };
+        let bullets = [];
+        let coins = [];
+        const controls = {
+            left: false,
+            right: false,
+            jump: false,
+            shoot: false,
+        };
+
+        function drawPlayer() {
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+        }
+
+        function update() {
+            if (controls.left) player.x -= player.speed;
+            if (controls.right) player.x += player.speed;
+            if (controls.jump && !player.isJumping) {
+                player.dy = -player.jumpForce;
+                player.isJumping = true;
+            }
+
+            player.y += player.dy;
+            player.dy += player.gravity;  
+
+            if (player.y + player.height > canvas.height) {
+                player.y = canvas.height - player.height;
+                player.isJumping = false;
+                player.dy = 0;
+            }
+
+            if (player.x < 0) player.x = 0;
+            if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPlayer();
+            requestAnimationFrame(update);
+        }
+
+        document.getElementById('left').onclick = () => controls.left = true;
+        document.getElementById('right').onclick = () => controls.right = true;
+        document.getElementById('jump').onclick = () => {
+            controls.jump = true;
+            setTimeout(() => controls.jump = false, 200);
+        };
+        document.getElementById('shoot').onclick = () => {
+            bullets.push({
+                x: player.x + player.width / 2,
+                y: player.y,
+            });
+        };
+
+        function drawBullets() {
+            ctx.fillStyle = 'red';
+            bullets.forEach((bullet, index) => {
+                bullet.y -= 5;
+                ctx.fillRect(bullet.x, bullet.y, 5, 5);
+            });
+            bullets = bullets.filter(bullet => bullet.y > 0);
+        }
+
+        update();
+    </script>
+</body>
+</html>
