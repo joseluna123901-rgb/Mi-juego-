@@ -3,61 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Platform Game</title>
+    <title>Game Controls</title>
     <style>
-        body { margin: 0; overflow: hidden; }
-        canvas { display: block; background: #87CEEB; }
+        body { margin: 0; }
+        .controls { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; justify-content: space-between; width: 80%; }
+        .button { background-color: #007BFF; color: white; border: none; border-radius: 5px; padding: 15px; font-size: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
     <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    class Player {
-        constructor() {
-            this.width = 50;
-            this.height = 50;
-            this.x = canvas.width / 2;
-            this.y = canvas.height / 2;
-            this.speed = 5;
-            this.color = 'blue';
-        }
-        draw() {
-            ctx.fillStyle = this.color;
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-        }
-        move() {
-            window.addEventListener('touchstart', (e) => this.touchControls(e));
-            window.addEventListener('touchend', () => this.stopMoving());
-        }
-        touchControls(e) {
-            const touch = e.touches[0];
-            if (touch.clientX > canvas.width / 2) {
-                this.x += this.speed;
-            } else {
-                this.x -= this.speed;
-            }
-            this.y -= this.speed; // Simulating jumping
-        }
-        stopMoving() {
-            this.y += 0; // Stopping vertical movement
-        }
-    }
-
-    const player = new Player();
-
-    function update() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        player.draw();
-        requestAnimationFrame(update);
-    }
-
-    player.move();
-    update();
+        function moveLeft() { console.log('Moving left'); }
+        function moveRight() { console.log('Moving right'); }
+        function jump() { console.log('Jumping'); }
+        function shoot() { console.log('Shooting'); }
     </script>
+    <div class="controls">
+        <button class="button" onclick="moveLeft()">LEFT</button>
+        <button class="button" onclick="moveRight()">RIGHT</button>
+        <button class="button" onclick="jump()">JUMP</button>
+        <button class="button" onclick="shoot()">SHOOT</button>
+    </div>
 </body>
 </html>
